@@ -40,30 +40,17 @@ $host.privatedata.ProgressForegroundColor = "red"
 $host.privatedata.ProgressBackgroundColor = "black"
 
 # Wykonaj komendę fsutil usn readJournal i przekieruj wynik do pliku Receba.txt
-$journalResult = fsutil usn readJournal C: CSV >> Receba.txt
-
-# Sprawdź, czy komenda została wykonana pomyślnie
-if ($journalResult) {
+try {
+    $journalResult = fsutil usn readJournal C: CSV >> Receba.txt
     Write-Host "Success: 'fsutil usn readJournal' command executed successfully." -ForegroundColor Green
     Write-Host "File 'Receba.txt' created." -ForegroundColor Green
-} else {
+} catch {
     Write-Host "Error: failed to execute 'fsutil usn readJournal' command." -ForegroundColor Red
 }
 
 # Wykonaj komendę dir na wszystkich plikach .jar i przekieruj wynik do pliku JarList.txt
-$jarListResult = dir -Recurse -Filter *.jar | Select-Object -ExpandProperty FullName | Out-File -FilePath "JarList.txt"
-
-# Sprawdź, czy komenda została wykonana pomyślnie
-if ($jarListResult) {
-    Write-Host "Success: 'JarList.txt' file created with list of .jar files." -ForegroundColor Green
-} else {
-    Write-Host "Error: failed to create 'JarList.txt' file." -ForegroundColor Red
-}
-# Wykonaj komendę dir na wszystkich plikach .jar i przekieruj wynik do pliku JarList.txt
-$jarListResult = dir -Recurse -Filter *.jar | Select-Object -ExpandProperty FullName | Out-File -FilePath "JarList.txt"
-
-# Sprawdź, czy komenda została wykonana pomyślnie
-if ($jarListResult) {
+try {
+    $jarListResult = dir -Recurse -Filter *.jar -ErrorAction SilentlyContinue | Select-Object -ExpandProperty FullName | Out-File -FilePath "JarList.txt" -ErrorAction Stop
     Write-Host @"
  ██████╗██╗   ██╗███████╗████████╗███████╗██╗     
 ██╔════╝██║   ██║██╔════╝╚══██╔══╝██╔════╝██║     
@@ -73,7 +60,6 @@ if ($jarListResult) {
  ╚═════╝ ╚═════╝ ╚══════╝   ╚═╝   ╚══════╝╚══════╝
 "@
     Write-Host "Success: 'JarList.txt' file created with list of .jar files." -ForegroundColor Green
-} else {
+} catch {
     Write-Host "Error: failed to create 'JarList.txt' file." -ForegroundColor Red
 }
-
