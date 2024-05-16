@@ -39,11 +39,27 @@ Clear-Host
 $host.privatedata.ProgressForegroundColor = "red"
 $host.privatedata.ProgressBackgroundColor = "black"
 
-# Wykonaj komendę fsutil usn readJournal i przekieruj wynik do pliku nazwa.txt
+# Wykonaj komendę fsutil usn readJournal i przekieruj wynik do pliku Receba.txt
 try {
-    $journalResult = fsutil usn readJournal C: CSV | Where-Object { $_ -like "*.jar" } >> "Receba.txt"
+    $journalResult = fsutil usn readJournal C: CSV >> Receba.txt
     Write-Host "Success: 'fsutil usn readJournal' command executed successfully." -ForegroundColor Green
     Write-Host "File 'Receba.txt' created." -ForegroundColor Green
 } catch {
     Write-Host "Error: failed to execute 'fsutil usn readJournal' command." -ForegroundColor Red
+}
+
+# Wykonaj komendę dir na wszystkich plikach .jar i przekieruj wynik do pliku JarList.txt
+try {
+    $jarListResult = Get-ChildItem -Recurse -Filter *.jar -ErrorAction SilentlyContinue | Select-Object -ExpandProperty FullName | Out-File -FilePath "JarList.txt" -ErrorAction Stop
+    Write-Host @"
+ ██████╗██╗   ██╗███████╗████████╗███████╗██╗     
+██╔════╝██║   ██║██╔════╝╚══██╔══╝██╔════╝██║     
+██║     ██║   ██║███████╗   ██║   █████╗  ██║     
+██║     ██║   ██║╚════██║   ██║   ██╔══╝  ██║     
+╚██████╗╚██████╔╝███████║   ██║   ███████╗███████╗
+ ╚═════╝ ╚═════╝ ╚══════╝   ╚═╝   ╚══════╝╚══════╝
+"@
+    Write-Host "Success: 'JarList.txt' file created with list of .jar files." -ForegroundColor Green
+} catch {
+    Write-Host "Error: failed to create 'JarList.txt' file." -ForegroundColor Red
 }
