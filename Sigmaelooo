@@ -1,0 +1,69 @@
+Clear-Host
+
+Write-Host @"
+  ██████╗ ███████╗██████╗     ██╗      ██████╗ ████████╗██╗   ██╗███████╗         
+  ██╔══██╗██╔════╝██╔══██╗    ██║     ██╔═══██╗╚══██╔══╝██║   ██║██╔════╝         
+  ██████╔╝█████╗  ██║  ██║    ██║     ██║   ██║   ██║   ██║   ██║███████╗         
+  ██╔══██╗██╔══╝  ██║  ██║    ██║     ██║   ██║   ██║   ██║   ██║╚════██║         
+  ██║  ██║███████╗██████╔╝    ███████╗╚██████╔╝   ██║   ╚██████╔╝███████║         
+  ╚═╝  ╚═╝╚══════╝╚═════╝     ╚══════╝ ╚═════╝    ╚═╝    ╚═════╝ ╚══════╝         
+                                                                                  
+  ███████╗██╗ ██████╗ ███╗   ██╗ █████╗ ████████╗██╗   ██╗██████╗ ███████╗███████╗
+  ██╔════╝██║██╔════╝ ████╗  ██║██╔══██╗╚══██╔══╝██║   ██║██╔══██╗██╔════╝██╔════╝
+  ███████╗██║██║  ███╗██╔██╗ ██║███████║   ██║   ██║   ██║██████╔╝█████╗  ███████╗
+  ╚════██║██║██║   ██║██║╚██╗██║██╔══██║   ██║   ██║   ██║██╔══██╗██╔══╝  ╚════██║
+  ███████║██║╚██████╔╝██║ ╚████║██║  ██║   ██║   ╚██████╔╝██║  ██║███████╗███████║
+  ╚══════╝╚═╝ ╚═════╝ ╚═╝  ╚═══╝╚═╝  ╚═╝   ╚═╝    ╚═════╝ ╚═╝  ╚═╝╚══════╝╚══════╝
+"@ -ForegroundColor Red
+Write-Host ""
+Write-Host "  Made by Bacanoicua kjj - " -ForegroundColor Blue -NoNewline
+Write-Host -ForegroundColor Red "discord.gg/redlotus"
+
+Write-Host ""
+
+# Sprawdzenie czy skrypt jest uruchamiany jako administrator
+function Test-Admin {
+    $currentUser = New-Object Security.Principal.WindowsPrincipal $([Security.Principal.WindowsIdentity]::GetCurrent())
+    $currentUser.IsInRole([Security.Principal.WindowsBuiltinRole]::Administrator)
+}
+
+if (!(Test-Admin)) {
+    Write-Warning "Please Run This Script as Administrator."
+    Start-Sleep 10
+    Exit
+}
+
+Start-Sleep -Seconds 3
+Clear-Host
+
+$host.privatedata.ProgressForegroundColor = "red"
+$host.privatedata.ProgressBackgroundColor = "black"
+
+# Pobranie wszystkich plików .jar na komputerze
+$paths = Get-ChildItem -Path $env:SystemDrive -Recurse -Include *.jar -ErrorAction SilentlyContinue | Select-Object -ExpandProperty FullName
+
+# Inicjalizacja dziennika zdarzeń
+$eventLog = New-Object System.Diagnostics.EventLog("Application")
+
+# Inicjalizacja tablicy do przechowywania informacji o zdarzeniach
+$eventsInfo = @()
+
+foreach ($path in $paths) {
+    # Sprawdzenie, czy plik .jar został uruchomiony
+    $events = $eventLog.Entries | Where-Object { $_.Message -like "*$path*" }
+
+    foreach ($event in $events) {
+        # Zapisanie informacji o zdarzeniu
+        $eventInfo = New-Object PSObject -Property @{
+            TimeGenerated = $event.TimeGenerated
+            Message = $event.Message
+        }
+
+        $eventsInfo += $eventInfo
+    }
+}
+
+# Zapisanie informacji o zdarzeniach do pliku jarki.txt
+$eventsInfo | Export-Csv -Path "jarki.txt" -NoTypeInformation
+
+Write-Host "Scan completed. Results saved to jarki.txt." -ForegroundColor Yellow
