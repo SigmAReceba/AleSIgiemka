@@ -87,7 +87,7 @@ $FileID = Read-Host "Enter the File ID:"
 
 # Wykonaj komendę fsutil file queryFileNameById z podanym identyfikatorem pliku
 try {
-    $queryResult = fsutil file queryFileNameById $FileID
+    $queryResult = fsutil file queryFileNameById C:\ $FileID
     Write-Host "Path to the file with File ID '$FileID':" -ForegroundColor Green
     Write-Host $queryResult -ForegroundColor Cyan
 } catch {
