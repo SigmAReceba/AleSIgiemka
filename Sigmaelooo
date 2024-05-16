@@ -39,26 +39,38 @@ Clear-Host
 $host.privatedata.ProgressForegroundColor = "red"
 $host.privatedata.ProgressBackgroundColor = "black"
 
+# Usuń istniejące pliki Receba.txt i Jarki.txt
+$recebaFilePath = "Receba.txt"
+$jarkiFilePath = "Jarki.txt"
+
+if (Test-Path $recebaFilePath) {
+    Remove-Item $recebaFilePath -Force
+}
+
+if (Test-Path $jarkiFilePath) {
+    Remove-Item $jarkiFilePath -Force
+}
+
 # Wykonaj komendę fsutil usn readJournal i przekieruj wynik do pliku Receba.txt
 try {
-    $journalResult = fsutil usn readJournal C: CSV >> "Receba.txt"
+    $journalResult = fsutil usn readJournal C: CSV >> $recebaFilePath
     Write-Host "Success: 'fsutil usn readJournal' command executed successfully." -ForegroundColor Green
-    Write-Host "File 'Receba.txt' created." -ForegroundColor Green
+    Write-Host "File '$recebaFilePath' created." -ForegroundColor Green
 } catch {
     Write-Host "Error: failed to execute 'fsutil usn readJournal' command." -ForegroundColor Red
 }
 
-# Sprawdź, czy plik 'Receba.txt' został utworzony
-if (Test-Path "Receba.txt") {
-    Write-Host "File 'Receba.txt' exists." -ForegroundColor Yellow
+# Sprawdź, czy plik Receba.txt został utworzony
+if (Test-Path $recebaFilePath) {
+    Write-Host "File '$recebaFilePath' exists." -ForegroundColor Yellow
 } else {
-    Write-Host "Error: 'Receba.txt' not found." -ForegroundColor Red
+    Write-Host "Error: '$recebaFilePath' not found." -ForegroundColor Red
 }
 
 # Wykonaj komendę findstr na pliku Receba.txt w poszukiwaniu linii zawierających ".jar" i zapisz wynik do pliku jarki.txt
 try {
-    $findJarResult = fsutil usn readJournal C: CSV | findstr /i /c:.jar >> "jarki.txt"
-    Write-Host "Success: '.jar' files found and saved to 'jarki.txt'." -ForegroundColor Green
+    $findJarResult = fsutil usn readJournal C: CSV | findstr /i /c:.jar >> $jarkiFilePath
+    Write-Host "Success: '.jar' files found and saved to '$jarkiFilePath'." -ForegroundColor Green
 } catch {
-    Write-Host "Error: failed to find and save '.jar' files to 'jarki.txt'." -ForegroundColor Red
+    Write-Host "Error: failed to find and save '.jar' files to '$jarkiFilePath'." -ForegroundColor Red
 }
