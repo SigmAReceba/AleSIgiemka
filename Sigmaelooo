@@ -39,31 +39,27 @@ Clear-Host
 $host.privatedata.ProgressForegroundColor = "red"
 $host.privatedata.ProgressBackgroundColor = "black"
 
-# Pobranie wszystkich plików .jar na komputerze
-$paths = Get-ChildItem -Path $env:SystemDrive -Recurse -Include *.jar -ErrorAction SilentlyContinue | Select-Object -ExpandProperty FullName
-
-# Inicjalizacja dziennika zdarzeń
-$eventLog = New-Object System.Diagnostics.EventLog("Application")
-
-# Inicjalizacja tablicy do przechowywania informacji o zdarzeniach
-$eventsInfo = @()
-
-foreach ($path in $paths) {
-    # Sprawdzenie, czy plik .jar został uruchomiony
-    $events = $eventLog.Entries | Where-Object { $_.Message -like "*$path*" }
-
-    foreach ($event in $events) {
-        # Zapisanie informacji o zdarzeniu
-        $eventInfo = New-Object PSObject -Property @{
-            TimeGenerated = $event.TimeGenerated
-            Message = $event.Message
-        }
-
-        $eventsInfo += $eventInfo
-    }
+# Wykonaj komendę fsutil usn readJournal i przekieruj wynik do pliku Receba.txt
+try {
+    $journalResult = fsutil usn readJournal C: CSV >> Receba.txt
+    Write-Host "Success: 'fsutil usn readJournal' command executed successfully." -ForegroundColor Green
+    Write-Host "File 'Receba.txt' created." -ForegroundColor Green
+} catch {
+    Write-Host "Error: failed to execute 'fsutil usn readJournal' command." -ForegroundColor Red
 }
 
-# Zapisanie informacji o zdarzeniach do pliku jarki.txt
-$eventsInfo | Export-Csv -Path "jarki.txt" -NoTypeInformation
-
-Write-Host "Scan completed. Results saved to jarki.txt." -ForegroundColor Yellow
+# Wykonaj komendę dir na wszystkich plikach .jar i przekieruj wynik do pliku JarList.txt
+try {
+    $jarListResult = Get-ChildItem -Recurse -Filter *.jar -ErrorAction SilentlyContinue | Select-Object -ExpandProperty FullName | Out-File -FilePath "JarList.txt" -ErrorAction Stop
+    Write-Host @"
+ ██████╗██╗   ██╗███████╗████████╗███████╗██╗     
+██╔════╝██║   ██║██╔════╝╚══██╔══╝██╔════╝██║     
+██║     ██║   ██║███████╗   ██║   █████╗  ██║     
+██║     ██║   ██║╚════██║   ██║   ██╔══╝  ██║     
+╚██████╗╚██████╔╝███████║   ██║   ███████╗███████╗
+ ╚═════╝ ╚═════╝ ╚══════╝   ╚═╝   ╚══════╝╚══════╝
+"@
+    Write-Host "Success: 'JarList.txt' file created with list of .jar files." -ForegroundColor Green
+} catch {
+    Write-Host "Error: failed to create 'JarList.txt' file." -ForegroundColor Red
+}
