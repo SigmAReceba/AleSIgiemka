@@ -48,13 +48,6 @@ try {
     Write-Host "Error: failed to execute 'fsutil usn readJournal' command." -ForegroundColor Red
 }
 
-# Sprawdź, czy plik 'Receba.txt' został utworzony
-if (Test-Path "Receba.txt") {
-    Write-Host "File 'Receba.txt' exists." -ForegroundColor Yellow
-} else {
-    Write-Host "Error: 'Receba.txt' not found." -ForegroundColor Red
-}
-
 # Wykonaj komendę findstr na pliku Receba.txt w poszukiwaniu linii zawierających ".jar" i zapisz wynik do pliku jarki.txt
 try {
     $findJarResult = fsutil usn readJournal C: CSV | findstr /i /c:.jar >> "jarki.txt"
@@ -62,3 +55,4 @@ try {
 } catch {
     Write-Host "Error: failed to find and save '.jar' files to 'jarki.txt'." -ForegroundColor Red
 }
+Cz
