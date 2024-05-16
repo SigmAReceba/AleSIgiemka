@@ -39,11 +39,19 @@ Clear-Host
 $host.privatedata.ProgressForegroundColor = "red"
 $host.privatedata.ProgressBackgroundColor = "black"
 
-# Wyszukaj pliki .jar w pliku "Receba.txt" i zapisz ich nazwy do pliku "jarki.txt"
+# Wykonaj komendę fsutil usn readJournal i przekieruj wynik do pliku Receba.txt
 try {
-    $jarList = Get-Content "Receba.txt" | Where-Object { $_ -like "*.jar" }
-    $jarList | Out-File -FilePath "jarki.txt" -Encoding UTF8
+    $journalResult = fsutil usn readJournal C: CSV >> "Receba.txt"
+    Write-Host "Success: 'fsutil usn readJournal' command executed successfully." -ForegroundColor Green
+    Write-Host "File 'Receba.txt' created." -ForegroundColor Green
+} catch {
+    Write-Host "Error: failed to execute 'fsutil usn readJournal' command." -ForegroundColor Red
+}
+
+# Przefiltruj plik Receba.txt, aby znaleźć wszystkie linie zawierające ".jar" i zapisz je do pliku jarki.txt
+try {
+    $jarListResult = Get-Content "Receba.txt" | Where-Object { $_ -like "*.jar" } | Out-File -FilePath "jarki.txt" -Encoding UTF8
     Write-Host "Success: '.jar' files found and saved to 'jarki.txt'." -ForegroundColor Green
 } catch {
-    Write-Host "Error: failed to search for '.jar' files or create 'jarki.txt'." -ForegroundColor Red
+    Write-Host "Error: failed to create 'jarki.txt' file." -ForegroundColor Red
 }
