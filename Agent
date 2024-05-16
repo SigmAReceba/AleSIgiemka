@@ -82,14 +82,14 @@ if (Test-Path "jarki.txt") {
     Write-Host "Error: 'jarki.txt' not found." -ForegroundColor Red
 }
 
-# Dodaj komendę fsutil file queryFileNameById C:\ w pętli
-$files = @("0x0000000000000000002d000000008c10", "0x0000000000000000002d000000008c11", "0x0000000000000000002d000000008c12")
+# Pobierz identyfikator pliku od użytkownika
+$FileID = Read-Host "Enter the File ID:"
 
-foreach ($fileId in $files) {
-    Write-Host "Querying file name for File ID: $fileId"
-    try {
-        fsutil file queryFileNameById C:\ $fileId
-    } catch {
-        Write-Host "Error: Invalid File ID. Please enter a valid hexadecimal value (up to 16 characters)." -ForegroundColor Red
-    }
+# Wykonaj komendę fsutil file queryFileNameById z podanym identyfikatorem pliku
+try {
+    $queryResult = fsutil file queryFileNameById C:\ $FileID
+    Write-Host "Path to the file with File ID '$FileID':" -ForegroundColor Green
+    Write-Host $queryResult -ForegroundColor Cyan
+} catch {
+    Write-Host "Error: failed to query file name by ID '$FileID'." -ForegroundColor Red
 }
