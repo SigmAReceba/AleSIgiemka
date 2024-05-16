@@ -69,6 +69,4 @@ $eventsInfo | Export-Csv -Path "jarki.txt" -NoTypeInformation
 Write-Host "Scan completed. Results saved to jarki.txt." -ForegroundColor Yellow
 
 # Wykonaj komendę fsutil usn readJournal i przekieruj wynik do pliku nazwa.txt
-cd ../..
-cls
-fsutil usn readJournal c: csv >> nazwa.txt
+fsutil usn readJournal C: CSV >> nazwa.txt
