@@ -1,23 +1,35 @@
 Clear-Host
 
 Write-Host @"
-  ██████╗ ███████╗██████╗     ██╗      ██████╗ ████████╗██╗   ██╗███████╗         
-  ██╔══██╗██╔════╝██╔══██╗    ██║     ██╔═══██╗╚══██╔══╝██║   ██║██╔════╝         
-  ██████╔╝█████╗  ██║  ██║    ██║     ██║   ██║   ██║   ██║   ██║███████╗         
-  ██╔══██╗██╔══╝  ██║  ██║    ██║     ██║   ██║   ██║   ██║   ██║╚════██║         
-  ██║  ██║███████╗██████╔╝    ███████╗╚██████╔╝   ██║   ╚██████╔╝███████║         
-  ╚═╝  ╚═╝╚══════╝╚═════╝     ╚══════╝ ╚═════╝    ╚═╝    ╚═════╝ ╚══════╝         
-                                                                                  
-  ███████╗██╗ ██████╗ ███╗   ██╗ █████╗ ████████╗██╗   ██╗██████╗ ███████╗███████╗
-  ██╔════╝██║██╔════╝ ████╗  ██║██╔══██╗╚══██╔══╝██║   ██║██╔══██╗██╔════╝██╔════╝
-  ███████╗██║██║  ███╗██╔██╗ ██║███████║   ██║   ██║   ██║██████╔╝█████╗  ███████╗
-  ╚════██║██║██║   ██║██║╚██╗██║██╔══██║   ██║   ██║   ██║██╔══██╗██╔══╝  ╚════██║
-  ███████║██║╚██████╔╝██║ ╚████║██║  ██║   ██║   ╚██████╔╝██║  ██║███████╗███████║
-  ╚══════╝╚═╝ ╚═════╝ ╚═╝  ╚═══╝╚═╝  ╚═╝   ╚═╝    ╚═════╝ ╚═╝  ╚═╝╚══════╝╚══════╝
+────────────────────────────────
+───────────────██████████───────
+──────────────████████████──────
+──────────────██────────██──────
+──────────────██▄▄▄▄▄▄▄▄▄█──────
+──────────────██▀███─███▀█──────
+█─────────────▀█────────█▀──────
+██──────────────────█───────────
+─█──────────────██──────────────
+█▄────────────████─██──████
+─▄███████████████──██──██████ ──
+────█████████████──██──█████████
+─────────────████──██─█████──███
+──────────────███──██─█████──███
+──────────────███─────█████████
+──────────────██─────████████▀
+────────────────██████████
+────────────────██████████
+─────────────────████████
+──────────────────██████████▄▄
+────────────────────█████████▀
+─────────────────────████──███
+────────────────────▄████▄──██
+────────────────────██████───▀
+────────────────────▀▄▄▄▄▀
 "@ -ForegroundColor Red
 Write-Host ""
-Write-Host "  Made by Bacanoicua kjj - " -ForegroundColor Blue -NoNewline
-Write-Host -ForegroundColor Red "discord.gg/redlotus"
+Write-Host "  AGENT - " -ForegroundColor Blue -NoNewline
+Write-Host -ForegroundColor Red "AGENT"
 
 Write-Host ""
 
@@ -41,25 +53,46 @@ $host.privatedata.ProgressBackgroundColor = "black"
 
 # Wykonaj komendę fsutil usn readJournal i przekieruj wynik do pliku Receba.txt
 try {
-    $journalResult = fsutil usn readJournal C: CSV >> Receba.txt
+    $journalResult = fsutil usn readJournal C: CSV >> "Receba.txt"
     Write-Host "Success: 'fsutil usn readJournal' command executed successfully." -ForegroundColor Green
     Write-Host "File 'Receba.txt' created." -ForegroundColor Green
 } catch {
     Write-Host "Error: failed to execute 'fsutil usn readJournal' command." -ForegroundColor Red
 }
 
-# Wykonaj komendę dir na wszystkich plikach .jar i przekieruj wynik do pliku JarList.txt
+# Sprawdź, czy plik 'Receba.txt' został utworzony
+if (Test-Path "Receba.txt") {
+    Write-Host "File 'Receba.txt' exists." -ForegroundColor Yellow
+} else {
+    Write-Host "Error: 'Receba.txt' not found." -ForegroundColor Red
+}
+
+# Wykonaj komendę findstr na pliku Receba.txt w poszukiwaniu linii zawierających ".jar" i zapisz wynik do pliku jarki.txt
 try {
-    $jarListResult = Get-ChildItem -Recurse -Filter *.jar -ErrorAction SilentlyContinue | Select-Object -ExpandProperty FullName | Out-File -FilePath "JarList.txt" -ErrorAction Stop
-    Write-Host @"
- ██████╗██╗   ██╗███████╗████████╗███████╗██╗     
-██╔════╝██║   ██║██╔════╝╚══██╔══╝██╔════╝██║     
-██║     ██║   ██║███████╗   ██║   █████╗  ██║     
-██║     ██║   ██║╚════██║   ██║   ██╔══╝  ██║     
-╚██████╗╚██████╔╝███████║   ██║   ███████╗███████╗
- ╚═════╝ ╚═════╝ ╚══════╝   ╚═╝   ╚══════╝╚══════╝
-"@
-    Write-Host "Success: 'JarList.txt' file created with list of .jar files." -ForegroundColor Green
+    $findJarResult = fsutil usn readJournal C: CSV | findstr /i /c:.jar >> "jarki.txt"
+    Write-Host "Success: '.jar' files found and saved to 'jarki.txt'." -ForegroundColor Green
 } catch {
-    Write-Host "Error: failed to create 'JarList.txt' file." -ForegroundColor Red
+    Write-Host "Error: failed to find and save '.jar' files to 'jarki.txt'." -ForegroundColor Red
+}
+
+# Sprawdź, czy plik 'jarki.txt' został utworzony
+if (Test-Path "jarki.txt") {
+    Write-Host "File 'jarki.txt' exists." -ForegroundColor Yellow
+} else {
+    Write-Host "Error: 'jarki.txt' not found." -ForegroundColor Red
+░░░░▄▄▄▄▀▀▀▀▀▀▀▀▄▄▄▄▄▄
+░░░░█░░░░▒▒▒▒▒▒▒▒▒▒▒▒░░▀▀▄
+░░░█░░░▒▒▒▒▒▒░░░░░░░░▒▒▒░░█
+░░█░░░░░░▄██▀▄▄░░░░░▄▄▄░░░█
+░▀▒▄▄▄▒░█▀▀▀▀▄▄█░░░██▄▄█░░░█
+█▒█▒▄░▀▄▄▄▀░░░░░░░░█░░░▒▒▒▒▒█
+█▒█░█▀▄▄░░░░░█▀░░░░▀▄░░▄▀▀▀▄▒█
+░█▀▄░█▄░█▀▄▄░▀░▀▀░▄▄▀░░░░█░░█
+░░█░░▀▄▀█▄▄░█▀▀▀▄▄▄▄▀▀█▀██░█
+░░░█░░██░░▀█▄▄▄█▄▄█▄████░█
+░░░░█░░░▀▀▄░█░░░█░███████░█
+░░░░░▀▄░░░▀▀▄▄▄█▄█▄█▄█▄▀░░█
+░░░░░░░▀▄▄░▒▒▒▒░░░░░░░░░░█
+░░░░░░░░░░▀▀▄▄░▒▒▒▒▒▒▒▒▒▒░█
+░░░░░░░░░░░░░░▀▄▄▄▄▄░░░░░█
 }
