@@ -48,10 +48,11 @@ try {
     Write-Host "Error: failed to execute 'fsutil usn readJournal' command." -ForegroundColor Red
 }
 
-# Przefiltruj plik Receba.txt, aby znaleźć wszystkie linie zawierające ".jar" i zapisz je do pliku jarki.txt
-try {
-    $jarListResult = Get-Content "Receba.txt" | Where-Object { $_ -like "*.jar" } | Out-File -FilePath "jarki.txt" -Encoding UTF8
-    Write-Host "Success: '.jar' files found and saved to 'jarki.txt'." -ForegroundColor Green
-} catch {
-    Write-Host "Error: failed to create 'jarki.txt' file." -ForegroundColor Red
+# Sprawdź, czy plik 'Receba.txt' został utworzony
+if (Test-Path "Receba.txt") {
+    Write-Host "File 'Receba.txt' exists." -ForegroundColor Yellow
+} else {
+    Write-Host "Error: 'Receba.txt' not found." -ForegroundColor Red
 }
+
+# Wykonaj komendę findstr na pliku Receba.txt w poszukiwaniu linii zawierających ".jar
