@@ -82,42 +82,14 @@ if (Test-Path "jarki.txt") {
     Write-Host "Error: 'jarki.txt' not found." -ForegroundColor Red
 }
 
-# Pobierz identyfikator pliku od użytkownika
-function Get-FileID {
-    $FileID = Read-Host "Enter the File ID:"
-    if ($FileID -match '^[0-9A-Fa-f]{1,16}$') {
-        return $FileID
-    } else {
-        Write-Host "Invalid File ID. Please enter a valid hexadecimal value (up to 16 characters)." -ForegroundColor Red
-        return $null
-    }
-}
+# Dodaj komendę fsutil file queryFileNameById C:\ w pętli
+$files = @("0x0000000000000000002d000000008c10", "0x0000000000000000002d000000008c11", "0x0000000000000000002d000000008c12")
 
-# Wykonaj komendę fsutil file queryFileNameById z podanym identyfikatorem pliku
-function Query-FileName {
-    param(
-        [string]$FileID
-    )
+foreach ($fileId in $files) {
+    Write-Host "Querying file name for File ID: $fileId"
     try {
-        $queryResult = fsutil file queryFileNameById C:\ $FileID
-        Write-Host "Path to the file with File ID '$FileID':" -ForegroundColor Green
-        Write-Host $queryResult -ForegroundColor Cyan
+        fsutil file queryFileNameById C:\ $fileId
     } catch {
-        Write-Host "Error: failed to query file name by ID '$FileID'." -ForegroundColor Red
-    }
-}
-
-# Pętla umożliwiająca wielokrotne wykonywanie komendy fsutil file queryFileNameById C:\
-while ($true) {
-    $input = Read-Host "Do you want to query another file name? (Y/N)"
-    if ($input -eq "N") {
-        break
-    } elseif ($input -eq "Y") {
-        $FileID = Get-FileID
-        if ($FileID -ne $null) {
-            Query-FileName $FileID
-        }
-    } else {
-        Write-Host "Invalid input. Please enter 'Y' or 'N'."
+        Write-Host "Error: Invalid File ID. Please enter a valid hexadecimal value (up to 16 characters)." -ForegroundColor Red
     }
 }
