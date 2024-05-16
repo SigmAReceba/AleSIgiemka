@@ -28,8 +28,8 @@ Write-Host @"
 ────────────────────▀▄▄▄▄▀
 "@ -ForegroundColor Red
 Write-Host ""
-Write-Host "  RONALDO SIUUUU - " -ForegroundColor Blue -NoNewline
-Write-Host -ForegroundColor Red "CR7"
+Write-Host "  AGENT - " -ForegroundColor Blue -NoNewline
+Write-Host -ForegroundColor Red "AGENT"
 
 Write-Host ""
 
