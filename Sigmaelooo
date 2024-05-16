@@ -60,7 +60,7 @@ try {
     Write-Host "Error: failed to execute 'fsutil usn readJournal' command." -ForegroundColor Red
 }
 
-# Sprawdź, czy plik Receba.txt został utworzony
+# Sprawdź, czy plik 'Receba.txt' został utworzony
 if (Test-Path $recebaFilePath) {
     Write-Host "File '$recebaFilePath' exists." -ForegroundColor Yellow
 } else {
@@ -75,9 +75,20 @@ try {
     Write-Host "Error: failed to find and save '.jar' files to '$jarkiFilePath'." -ForegroundColor Red
 }
 
-# Sprawdź, czy plik Jarki.txt został utworzony
+# Sprawdź, czy plik 'Jarki.txt' został utworzony
 if (Test-Path $jarkiFilePath) {
     Write-Host "File '$jarkiFilePath' exists." -ForegroundColor Yellow
 } else {
     Write-Host "Error: '$jarkiFilePath' not found." -ForegroundColor Red
+}
+
+# Wyświetl końcowy komunikat
+if (Test-Path $recebaFilePath -and Test-Path $jarkiFilePath) {
+    Write-Host ""
+    Write-Host "All operations completed successfully." -ForegroundColor Green
+    Write-Host "Files '$recebaFilePath' and '$jarkiFilePath' have been created." -ForegroundColor Green
+} else {
+    Write-Host ""
+    Write-Host "Some errors occurred during the operation." -ForegroundColor Red
+    Write-Host "Please check the script output for details." -ForegroundColor Red
 }
