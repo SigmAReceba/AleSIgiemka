@@ -80,6 +80,9 @@ if (Test-Path "jarki.txt") {
     Write-Host "File 'jarki.txt' exists." -ForegroundColor Yellow
 } else {
     Write-Host "Error: 'jarki.txt' not found." -ForegroundColor Red
+}
+
+# Napisz na koniec
 Write-Host @"
 ░░░░▄▄▄▄▀▀▀▀▀▀▀▀▄▄▄▄▄▄
 ░░░░█░░░░▒▒▒▒▒▒▒▒▒▒▒▒░░▀▀▄
@@ -96,5 +99,5 @@ Write-Host @"
 ░░░░░░░▀▄▄░▒▒▒▒░░░░░░░░░░█
 ░░░░░░░░░░▀▀▄▄░▒▒▒▒▒▒▒▒▒▒░█
 ░░░░░░░░░░░░░░▀▄▄▄▄▄░░░░░█
-"@ -ForegroundColor White
+
 }
