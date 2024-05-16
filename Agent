@@ -86,7 +86,7 @@ if (Test-Path "jarki.txt") {
 function Get-FileID {
     $FileID = Read-Host "Enter the File ID:"
     if ($FileID -match '^[0-9A-Fa-f]{1,16}$') {
-        return "0x$FileID"
+        return $FileID
     } else {
         Write-Host "Invalid File ID. Please enter a valid hexadecimal value (up to 16 characters)." -ForegroundColor Red
         return $null
