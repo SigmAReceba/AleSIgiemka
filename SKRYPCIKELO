@@ -20,61 +20,55 @@ Write-Host "  Made by Bacanoicua kjj - " -ForegroundColor Blue -NoNewline
 Write-Host -ForegroundColor Red "discord.gg/redlotus"
 
 Write-Host ""
-function Test-Admin {;$currentUser = New-Object Security.Principal.WindowsPrincipal $([Security.Principal.WindowsIdentity]::GetCurrent());$currentUser.IsInRole([Security.Principal.WindowsBuiltinRole]::Administrator);}
+
+# Sprawdzenie czy skrypt jest uruchamiany jako administrator
+function Test-Admin {
+    $currentUser = New-Object Security.Principal.WindowsPrincipal $([Security.Principal.WindowsIdentity]::GetCurrent())
+    $currentUser.IsInRole([Security.Principal.WindowsBuiltinRole]::Administrator)
+}
+
 if (!(Test-Admin)) {
-    Write-Warning "Please Run This Script as Admin."
+    Write-Warning "Please Run This Script as Administrator."
     Start-Sleep 10
     Exit
 }
 
-Start-Sleep -s 3
-
+Start-Sleep -Seconds 3
 Clear-Host
 
-$host.privatedata.ProgressForegroundColor = "red";
-$host.privatedata.ProgressBackgroundColor = "black";
+$host.privatedata.ProgressForegroundColor = "red"
+$host.privatedata.ProgressBackgroundColor = "black"
 
-$pathsFilePath = "paths.txt"
-if(-Not(Test-Path -Path $pathsFilePath)){
-    Write-Warning "The file $pathsFilePath does not exist."
-    Start-Sleep 10
-    Exit
-}
+# Pobranie wszystkich plików .jar na komputerze
+$paths = Get-ChildItem -Path $env:SystemDrive -Recurse -Include *.jar -ErrorAction SilentlyContinue | Select-Object -ExpandProperty FullName
 
-$paths = Get-Content "paths.txt" | Where-Object { $_ -like "*.jar" }
-$stopwatch = [Diagnostics.Stopwatch]::StartNew()
+# Inicjalizacja dziennika zdarzeń
+$eventLog = New-Object System.Diagnostics.EventLog("Application")
 
-$results = @()
-$executedJars = @()
-$count = 0
-$totalCount = $paths.Count
-$progressID = 1
+# Inicjalizacja tablicy do przechowywania informacji o zdarzeniach
+$eventsInfo = @()
 
 foreach ($path in $paths) {
-    $progress = [int]($count / $totalCount * 100)
-    Write-Progress -Activity "Scanning paths..." -Status "$progress% Complete:" -PercentComplete $progress -Id $progressID
-    $count++
+    # Sprawdzenie, czy plik .jar został uruchomiony
+    $events = $eventLog.Entries | Where-Object { $_.Message -like "*$path*" }
 
-    Try {
-        $fileName = Split-Path $path -Leaf
-        $executedJars += $fileName
+    foreach ($event in $events) {
+        # Zapisanie informacji o zdarzeniu
+        $eventInfo = New-Object PSObject -Property @{
+            TimeGenerated = $event.TimeGenerated
+            Message = $event.Message
+        }
 
-        $fileDetails = New-Object PSObject
-        $fileDetails | Add-Member Noteproperty Name $fileName
-        $fileDetails | Add-Member Noteproperty Path $path
-
-        $results += $fileDetails
-    } Catch {
+        $eventsInfo += $eventInfo
     }
 }
 
-$stopwatch.Stop()
+# Zapisanie informacji o zdarzeniach do pliku jarki.txt
+$eventsInfo | Export-Csv -Path "jarki.txt" -NoTypeInformation
 
-$time = $stopwatch.Elapsed.Hours.ToString("00") + ":" + $stopwatch.Elapsed.Minutes.ToString("00") + ":" + $stopwatch.Elapsed.Seconds.ToString("00") + "." + $stopwatch.Elapsed.Milliseconds.ToString("000")
+Write-Host "Scan completed. Results saved to jarki.txt." -ForegroundColor Yellow
 
-Write-Host ""
-Write-Host "The scan took $time to run." -ForegroundColor Yellow
-
-$results | Out-GridView -PassThru -Title 'Jar Files Results' 
-
-$executedJars | Out-File -FilePath "jarki.txt" -Append
+# Wykonaj komendę fsutil usn readJournal i przekieruj wynik do pliku nazwa.txt
+cd ../..
+cls
+fsutil usn readJournal c: csv >> nazwa.txt
