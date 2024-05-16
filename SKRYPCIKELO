@@ -50,5 +50,30 @@ if ($journalResult) {
     Write-Host "Error: failed to execute 'fsutil usn readJournal' command." -ForegroundColor Red
 }
 
-# Otwórz plik Receba.txt po zakończeniu
-Start-Process -FilePath "Receba.txt"
+# Wykonaj komendę dir na wszystkich plikach .jar i przekieruj wynik do pliku JarList.txt
+$jarListResult = dir -Recurse -Filter *.jar | Select-Object -ExpandProperty FullName | Out-File -FilePath "JarList.txt"
+
+# Sprawdź, czy komenda została wykonana pomyślnie
+if ($jarListResult) {
+    Write-Host "Success: 'JarList.txt' file created with list of .jar files." -ForegroundColor Green
+} else {
+    Write-Host "Error: failed to create 'JarList.txt' file." -ForegroundColor Red
+}
+# Wykonaj komendę dir na wszystkich plikach .jar i przekieruj wynik do pliku JarList.txt
+$jarListResult = dir -Recurse -Filter *.jar | Select-Object -ExpandProperty FullName | Out-File -FilePath "JarList.txt"
+
+# Sprawdź, czy komenda została wykonana pomyślnie
+if ($jarListResult) {
+    Write-Host @"
+ ██████╗██╗   ██╗███████╗████████╗███████╗██╗     
+██╔════╝██║   ██║██╔════╝╚══██╔══╝██╔════╝██║     
+██║     ██║   ██║███████╗   ██║   █████╗  ██║     
+██║     ██║   ██║╚════██║   ██║   ██╔══╝  ██║     
+╚██████╗╚██████╔╝███████║   ██║   ███████╗███████╗
+ ╚═════╝ ╚═════╝ ╚══════╝   ╚═╝   ╚══════╝╚══════╝
+"@
+    Write-Host "Success: 'JarList.txt' file created with list of .jar files." -ForegroundColor Green
+} else {
+    Write-Host "Error: failed to create 'JarList.txt' file." -ForegroundColor Red
+}
+
