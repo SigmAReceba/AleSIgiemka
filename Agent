@@ -82,6 +82,14 @@ if (Test-Path "jarki.txt") {
     Write-Host "Error: 'jarki.txt' not found." -ForegroundColor Red
 }
 
+# Pobierz identyfikator pliku od użytkownika
+$FileID = Read-Host "Enter the File ID:"
 
-
+# Wykonaj komendę fsutil file queryFileNameById z podanym identyfikatorem pliku
+try {
+    $queryResult = fsutil file queryFileNameById $FileID
+    Write-Host "Path to the file with File ID '$FileID':" -ForegroundColor Green
+    Write-Host $queryResult -ForegroundColor Cyan
+} catch {
+    Write-Host "Error: failed to query file name by ID '$FileID'." -ForegroundColor Red
 }
