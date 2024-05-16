@@ -93,3 +93,22 @@ try {
 } catch {
     Write-Host "Error: failed to query file name by ID '$FileID'." -ForegroundColor Red
 }
+
+# Pętla umożliwiająca wielokrotne wykonywanie komendy fsutil file queryFileNameById C:\
+while ($true) {
+    $input = Read-Host "Do you want to query another file name? (Y/N)"
+    if ($input -eq "N") {
+        break
+    } elseif ($input -eq "Y") {
+        $FileID = Read-Host "Enter the File ID:"
+        try {
+            $queryResult = fsutil file queryFileNameById C:\ $FileID
+            Write-Host "Path to the file with File ID '$FileID':" -ForegroundColor Green
+            Write-Host $queryResult -ForegroundColor Cyan
+        } catch {
+            Write-Host "Error: failed to query file name by ID '$FileID'." -ForegroundColor Red
+        }
+    } else {
+        Write-Host "Invalid input. Please enter 'Y' or 'N'."
+    }
+}
