@@ -33,7 +33,7 @@ Write-Host -ForegroundColor Red "AGENT"
 
 Write-Host ""
 
-# Sprawdzenie czy skrypt jest uruchamiany jako administrator
+
 function Test-Admin {
     $currentUser = New-Object Security.Principal.WindowsPrincipal $([Security.Principal.WindowsIdentity]::GetCurrent())
     $currentUser.IsInRole([Security.Principal.WindowsBuiltinRole]::Administrator)
@@ -51,7 +51,7 @@ Clear-Host
 $host.privatedata.ProgressForegroundColor = "red"
 $host.privatedata.ProgressBackgroundColor = "black"
 
-# Wykonaj komendę fsutil usn readJournal i przekieruj wynik do pliku Receba.txt
+
 try {
     $journalResult = fsutil usn readJournal C: CSV >> "Receba.txt"
     Write-Host "Success: 'fsutil usn readJournal' command executed successfully." -ForegroundColor Green
@@ -60,14 +60,14 @@ try {
     Write-Host "Error: failed to execute 'fsutil usn readJournal' command." -ForegroundColor Red
 }
 
-# Sprawdź, czy plik 'Receba.txt' został utworzony
+
 if (Test-Path "Receba.txt") {
     Write-Host "File 'Receba.txt' exists." -ForegroundColor Yellow
 } else {
     Write-Host "Error: 'Receba.txt' not found." -ForegroundColor Red
 }
 
-# Wykonaj komendę findstr na pliku Receba.txt w poszukiwaniu linii zawierających ".jar" i zapisz wynik do pliku jarki.txt
+
 try {
     $findJarResult = fsutil usn readJournal C: CSV | findstr /i /c:.jar >> "jarki.txt"
     Write-Host "Success: '.jar' files found and saved to 'jarki.txt'." -ForegroundColor Green
@@ -75,17 +75,17 @@ try {
     Write-Host "Error: failed to find and save '.jar' files to 'jarki.txt'." -ForegroundColor Red
 }
 
-# Sprawdź, czy plik 'jarki.txt' został utworzony
+
 if (Test-Path "jarki.txt") {
     Write-Host "File 'jarki.txt' exists." -ForegroundColor Yellow
 } else {
     Write-Host "Error: 'jarki.txt' not found." -ForegroundColor Red
 }
 
-# Pobierz identyfikator pliku od użytkownika
+
 $FileID = Read-Host "Enter the File ID:"
 
-# Wykonaj komendę fsutil file queryFileNameById z podanym identyfikatorem pliku
+
 try {
     $queryResult = fsutil file queryFileNameById C:\ $FileID
     Write-Host "Path to the file with File ID '$FileID':" -ForegroundColor Green
