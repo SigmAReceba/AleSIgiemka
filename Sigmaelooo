@@ -4,7 +4,7 @@ Write-Host -ForegroundColor Cyan "|  \/  |(_) _ _  (_)      / __|/ __|"
 Write-Host -ForegroundColor White "| |\/| || || ' \ | |      \__ \\__ \"
 Write-Host -ForegroundColor White "|_|  |_||_||_||_||_|      |___/|___/"
 Write-Host
-Write-Host -ForegroundColor White "By UnMonsieur#8388"
+Write-Host -ForegroundColor White "By TABMC"
 
 $extensions = "*.jar"
 $strings = "mod_d.classUT"
