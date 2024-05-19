@@ -1,100 +1,47 @@
-Clear-Host
 
-Write-Host @"
-────────────────────────────────
-───────────────██████████───────
-──────────────████████████──────
-──────────────██────────██──────
-──────────────██▄▄▄▄▄▄▄▄▄█──────
-──────────────██▀███─███▀█──────
-█─────────────▀█────────█▀──────
-██──────────────────█───────────
-─█──────────────██──────────────
-█▄────────────████─██──████
-─▄███████████████──██──██████ ──
-────█████████████──██──█████████
-─────────────████──██─█████──███
-──────────────███──██─█████──███
-──────────────███─────█████████
-──────────────██─────████████▀
-────────────────██████████
-────────────────██████████
-─────────────────████████
-──────────────────██████████▄▄
-────────────────────█████████▀
-─────────────────────████──███
-────────────────────▄████▄──██
-────────────────────██████───▀
-────────────────────▀▄▄▄▄▀
-"@ -ForegroundColor Red
-Write-Host ""
-Write-Host "  AGENT - " -ForegroundColor Blue -NoNewline
-Write-Host -ForegroundColor Red "AGENT"
+Write-Host -ForegroundColor Cyan " __  __  _        _        ___  ___"
+Write-Host -ForegroundColor Cyan "|  \/  |(_) _ _  (_)      / __|/ __|"
+Write-Host -ForegroundColor White "| |\/| || || ' \ | |      \__ \\__ \"
+Write-Host -ForegroundColor White "|_|  |_||_||_||_||_|      |___/|___/"
+Write-Host
+Write-Host -ForegroundColor White "By UnMonsieur#8388"
 
-Write-Host ""
+$extensions = "*.jar"
+$strings = "mod_d.classUT"
+$path = "C:\Users"
 
-# Sprawdzenie czy skrypt jest uruchamiany jako administrator
-function Test-Admin {
-    $currentUser = New-Object Security.Principal.WindowsPrincipal $([Security.Principal.WindowsIdentity]::GetCurrent())
-    $currentUser.IsInRole([Security.Principal.WindowsBuiltinRole]::Administrator)
+
+$i = 0
+$total = (Get-ChildItem -Path $path -Include $extensions -Recurse -File).Count
+Write-Progress -Activity "Expanding subdirectories..." -Status "Analyzing" -PercentComplete 0
+
+
+$ErrorActionPreference = 'SilentlyContinue'
+
+$results = @()
+
+Get-ChildItem -Path $path -Include $extensions -Recurse -File | 
+ForEach-Object { 
+    $file = $_
+    $content = Get-Content $file.FullName -Raw
+    foreach($string in $strings){
+        if($content.Contains($string)){
+            $result = [PSCustomObject]@{
+                FileName = $file.FullName
+                StringMatched = $string
+            }
+            $results += $result
+        }
+    }
+    $i++
+    Write-Progress -Activity "Searching for files" -Status "Processing" -PercentComplete (($i/$total)*100)
 }
 
-if (!(Test-Admin)) {
-    Write-Warning "Please Run This Script as Administrator."
-    Start-Sleep 10
-    Exit
-}
 
-Start-Sleep -Seconds 3
-Clear-Host
+$ErrorActionPreference = 'Continue'
 
-$host.privatedata.ProgressForegroundColor = "red"
-$host.privatedata.ProgressBackgroundColor = "black"
 
-# Wykonaj komendę fsutil usn readJournal i przekieruj wynik do pliku Receba.txt
-try {
-    $journalResult = fsutil usn readJournal C: CSV >> "Receba.txt"
-    Write-Host "Success: 'fsutil usn readJournal' command executed successfully." -ForegroundColor Green
-    Write-Host "File 'Receba.txt' created." -ForegroundColor Green
-} catch {
-    Write-Host "Error: failed to execute 'fsutil usn readJournal' command." -ForegroundColor Red
-}
+$results | Export-Csv -Path "FullScan.csv" -NoTypeInformation
 
-# Sprawdź, czy plik 'Receba.txt' został utworzony
-if (Test-Path "Receba.txt") {
-    Write-Host "File 'Receba.txt' exists." -ForegroundColor Yellow
-} else {
-    Write-Host "Error: 'Receba.txt' not found." -ForegroundColor Red
-}
 
-# Wykonaj komendę findstr na pliku Receba.txt w poszukiwaniu linii zawierających ".jar" i zapisz wynik do pliku jarki.txt
-try {
-    $findJarResult = fsutil usn readJournal C: CSV | findstr /i /c:.jar >> "jarki.txt"
-    Write-Host "Success: '.jar' files found and saved to 'jarki.txt'." -ForegroundColor Green
-} catch {
-    Write-Host "Error: failed to find and save '.jar' files to 'jarki.txt'." -ForegroundColor Red
-}
-
-# Sprawdź, czy plik 'jarki.txt' został utworzony
-if (Test-Path "jarki.txt") {
-    Write-Host "File 'jarki.txt' exists." -ForegroundColor Yellow
-} else {
-    Write-Host "Error: 'jarki.txt' not found." -ForegroundColor Red
-Write-Host @"
-░░░░▄▄▄▄▀▀▀▀▀▀▀▀▄▄▄▄▄▄
-░░░░█░░░░▒▒▒▒▒▒▒▒▒▒▒▒░░▀▀▄
-░░░█░░░▒▒▒▒▒▒░░░░░░░░▒▒▒░░█
-░░█░░░░░░▄██▀▄▄░░░░░▄▄▄░░░█
-░▀▒▄▄▄▒░█▀▀▀▀▄▄█░░░██▄▄█░░░█
-█▒█▒▄░▀▄▄▄▀░░░░░░░░█░░░▒▒▒▒▒█
-█▒█░█▀▄▄░░░░░█▀░░░░▀▄░░▄▀▀▀▄▒█
-░█▀▄░█▄░█▀▄▄░▀░▀▀░▄▄▀░░░░█░░█
-░░█░░▀▄▀█▄▄░█▀▀▀▄▄▄▄▀▀█▀██░█
-░░░█░░██░░▀█▄▄▄█▄▄█▄████░█
-░░░░█░░░▀▀▄░█░░░█░███████░█
-░░░░░▀▄░░░▀▀▄▄▄█▄█▄█▄█▄▀░░█
-░░░░░░░▀▄▄░▒▒▒▒░░░░░░░░░░█
-░░░░░░░░░░▀▀▄▄░▒▒▒▒▒▒▒▒▒▒░█
-░░░░░░░░░░░░░░▀▄▄▄▄▄░░░░░█
-"@ -ForegroundColor White
-}
+Write-Host "Results saved in current directory!" -ForegroundColor Green
